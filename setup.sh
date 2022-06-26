@@ -8,6 +8,9 @@ echo "Installing some useful packages..."
     sudo apt install -y git vim scrot xclip compton tmux i3 brightnessctl feh \
         virtualenv keepassxc rofi
 
+echo "Adding $USER to video group to use brightnessctl"
+sudo usermod -a -G video $USER
+
 if [ ! -d "$HOME/.config" ]; then
     echo "$HOME/.config directory does not exist. Creating it..."
     mkdir $HOME/.config
@@ -56,4 +59,4 @@ cp $WORKDIR/scripts/*.sh $HOME/scripts
 echo "You may want to configure something else manually, like VPN, etc..."
 echo "In your .bashrc file, search and delete the parts similar to the parts appended."
 echo "Like the color prompt without the 'parse_git' that may exist in the original file."
-echo "Done!"
+echo "Done! Please reboot computer"
