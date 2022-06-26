@@ -26,7 +26,7 @@ chown root:root /etc/sudoers.d/rhakamine
 
 echo "Copying .vimrc, .tmux.conf, i3/conf, i3status ..."
 cp $WORKIR/vimrc $HOME/.vimrc
-cp $WORKIR/tmux_config $HOME/.tmux.conf
+cp $WORKIR/tmux.config $HOME/.tmux.conf
 if [ ! -d $HOME/.config/i3 ]; then
     mkdir -p $HOME/.config/i3
 fi
