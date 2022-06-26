@@ -4,7 +4,7 @@ Just run the `setup.sh` script, like `bash script.sh`
 
 # Cedilla in keyboard with '+c
 
-Answer by (ThoriumBR)[https://superuser.com/a/1235405]:
+Answer by [ThoriumBR](https://superuser.com/a/1235405):
 
 It's because the cedilla module isn't loaded by default when the locale is set to en,
 so you have to change the configuration files for gtk to add them:
