@@ -45,6 +45,7 @@ if [ -f "$HOME/.bash_aliases" ]; then
 else
     cp $WORKDIR/bash_aliases $HOME/.bash_aliases
 fi
+source $HOME/.bashrc
 
 echo "Copying some scripts to $HOME/scripts..."
 if [ ! -d "$HOME/scripts"]; then
