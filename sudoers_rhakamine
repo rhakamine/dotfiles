@@ -1,0 +1,1 @@
+rhakamine ALL= NOPASSWD: /usr/sbin/pm-suspend, /usr/bin/brightnessctl
