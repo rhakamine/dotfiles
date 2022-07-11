@@ -179,11 +179,11 @@ exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.png
 
 # Printscreen saves to the path specified and adds it to the clipboard
 # Whole screen
-bindsym --release Print exec "scrot -m -e 'xclip -selection clipboard -t image/png -i $f && rm $f'"
+bindsym --release $mod+Shitf+w exec "scrot -m -e 'xclip -selection clipboard -t image/png -i $f && rm $f'"
 # Selection only
-bindsym --release Shift+Print exec "scrot -s -e 'xclip -selection clipboard -t image/png -i $f && rm $f'"
+bindsym --release $mod+Shift+s exec "scrot -s -e 'xclip -selection clipboard -t image/png -i $f && rm $f'"
 # Active window
-bindsym --release $mod+Shift+Print exec "scrot -u -e 'xclip -selection clipboard -t image/png -i $f && rm $f'"
+bindsym --release $mod+Shift+a exec "scrot -u -e 'xclip -selection clipboard -t image/png -i $f && rm $f'"
 
 # Audio controls - Alsamixer
 bindsym XF86AudioRaiseVolume exec "amixer -q sset Master,0 5+ unmute"
