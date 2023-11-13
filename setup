@@ -1,0 +1,134 @@
+#!/bin/bash
+
+SCRIPT_PATH=$(dirname $(realpath "$0"))
+
+
+echo "Install only Docker+Python3 [1] or entire setup [2] (with tmux, Neovim, fish, ...)?"
+read -p "[1] Only Docker+Python3 [2] All setup (with tmux, Neovim, fish, ...): " install_option
+
+if [[ $install_option != "1" && $install_option != "2" ]]; then
+    echo "Invalid option \"$install_option\""
+    exit 1
+fi
+
+# Common to both installation options
+sudo apt update && sudo apt install -y \
+    python3-pip \
+    virtualenv
+
+# Installing pre-requisites for Docker + Docker Compose
+sudo apt install -y ca-certificates \
+                    curl \
+                    gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$UBUNTU_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Installing Docker + Docker Compose
+sudo apt update && sudo apt install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
+
+
+# For USBIPD, to use USB devices in WSL2
+if [[ ! -z "$(which wsl.exe)" ]]; then
+    sudo apt install -y linux-tools-virtual hwdata
+    sudo update-alternatives --install /usr/local/bin/usbip usbip `ls /usr/lib/linux-tools/*/usbip | tail -n1` 20
+fi
+
+
+if [[ "$install_option" == "2" ]]; then
+    sudo apt update && sudo apt install -y \
+        keychain \
+        tmux \
+        ripgrep
+
+    # Install fish
+    if [[ -z "$(which fish)" ]]; then
+        sudo apt-add-repository ppa:fish-shell/release-3
+        sudo apt update && sudo apt install -y fish
+        chsh -s $(which fish)
+        mkdir -p ~/.config/fish && cp -r $SCRIPT_PATH/fish/* ~/.config/fish/
+    fi
+
+    # Install neovim
+    if [[ -z "$(which nvim)" ]]; then
+        echo
+        echo Installing Neovim =========================================
+        git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+                            ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+        curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+        chmod u+x nvim.appimage
+        ./nvim.appimage --appimage-extract
+        ./squashfs-root/AppRun --version
+        ## Expose neovim globally
+        sudo mv squashfs-root /
+        sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
+        rm ./nvim.appimage
+        echo
+        echo DONE ======================================================
+    fi
+
+    # Install tmux
+    if [[ ! -a ~/.config/tmux/tmux.conf.local ]]; then
+        echo
+        echo Installing tmux ===========================================
+        git clone https://github.com/gpakosz/.tmux.git ~/.local/share/tmux
+        mkdir -p ~/.config/tmux
+        ln -s ~/.local/share/tmux/.tmux.conf ~/.tmux.conf
+        cp ~/.local/share/tmux/.tmux.conf.local ~/.config/tmux/tmux.conf.local
+        ln -s ~/.config/tmux/tmux.conf.local ~/.tmux.conf.local
+        echo
+        echo DONE ======================================================
+    fi
+
+    # Moving nvim dotfiles
+    if [[ ! -d ~/.config/nvim ]]; then
+        echo
+        echo Moving $SCRIPT_PATH/nvim to ~/.config/nvim ================
+        mkdir -p ~/.confi/nvim && cp -r $SCRIPT_PATH/nvim/* ~/.config/nvim
+        echo
+        echo DONE ======================================================
+        echo
+    fi
+
+    # Moving scripts
+    if [[ ! -d ~/scripts ]]; then
+        echo
+        echo Moving $SCRIPT_PATH/scripts to ~/scripts
+        mkdir -p ~/scripts && cp -r $SCRIPT_PATH/scripts/* ~/scripts/
+    fi
+fi
+
+# Attach my user to 'docker' user group if docker is installed and
+# USER not in docker group yet
+if [[ ! -z "$(which docker)" && -z "$(groups | grep docker)" ]]; then
+    echo
+    echo Adding $USER to docker group ==============================
+    sudo usermod -aG docker $USER
+    echo
+    echo DONE ======================================================
+fi
+
+# Install virtualenv
+if [[ ! -d ~/.config/envs/py ]]; then
+    echo
+    echo Installing \'py\' virtualenv =============================
+    virtualenv ~/.config/envs/py -p $(which python3)
+    echo "Installed \"py\" environment in ~/.config/envs/py"
+    echo
+    echo DONE ======================================================
+fi
+
+if [[ "$install_option" == "2" ]]; then
+    echo Don\'t forget to run \":PackerInstall\" inside Neovim!
+fi
+
+exit 0
