@@ -86,4 +86,6 @@ return require('packer').startup(function(use)
   use("axelf4/vim-strip-trailing-whitespace")
   use("lervag/vimtex")
 
+  use("lukas-reineke/indent-blankline.nvim")
+
 end)
