@@ -1,15 +1,25 @@
-require("catppuccin").setup({
-    transparent_background = true,
-    dim_inactive = {
-        enabled = true, -- dims the background color of inactive window
-        shade = "dark",
-        percentage = 0.15, -- percentage of the shade to apply to the inactive window
+require('catppuccin').setup({
+    flavour = "mocha", -- latte, frappe, macchiato, mocha
+    background = { -- :h background
+        light = "latte",
+        dark = "mocha",
     },
+    transparent_background = true, -- disables setting the background color.
+})
+
+require('gruvbox').setup({
+    bold = false,
+    transparent_mode = true
+})
+
+require('everforest').setup({
+    background = "medium",
+    transparent_background_level = 1
 })
 
 function ColorMyPencils(color)
-    color = color or "catppuccin"
+    color = color or "everforest"
     vim.cmd.colorscheme(color)
 end
 
-ColorMyPencils()
+ColorMyPencils("everforest")

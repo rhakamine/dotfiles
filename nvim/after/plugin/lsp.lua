@@ -29,6 +29,8 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
 	['<C-y>'] = cmp.mapping.confirm({ select = true }),
 	["<C-e>"] = cmp.mapping.abort(),
 	["<C-Space>"] = cmp.mapping.complete(),
+	['<C-k>'] = cmp.mapping.scroll_docs(-4),
+	['<C-j>'] = cmp.mapping.scroll_docs(4),
 })
 
 cmp_mappings['<Tab>'] = nil
