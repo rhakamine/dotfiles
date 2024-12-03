@@ -93,7 +93,7 @@ if [[ "$install_option" == "2" ]]; then
     if [[ ! -d ~/.config/nvim ]]; then
         echo
         echo Moving $SCRIPT_PATH/nvim to ~/.config/nvim ================
-        mkdir -p ~/.confi/nvim && cp -r $SCRIPT_PATH/nvim/* ~/.config/nvim
+        mkdir -p ~/.config/nvim && cp -r $SCRIPT_PATH/nvim/* ~/.config/nvim
         echo
         echo DONE ======================================================
         echo
